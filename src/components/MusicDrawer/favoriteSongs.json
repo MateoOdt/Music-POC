@@ -1,0 +1,84 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Alice",
+      "favoriteSongs": [
+        {
+          "id": "3n3Ppam7vgaVa1iaRUc9Lp",
+          "name": "Blinding Lights",
+          "artists": [{ "name": "The Weeknd" }],
+          "album": {
+            "album_type": "album",
+            "images": [
+              { "url": "https://i.scdn.co/image/ab67616d00001e02a5b12e5a6c1d0c1e03f55c7a" }
+            ],
+            "href": "https://api.spotify.com/v1/albums/4yP0hdKOZPNshxUOjY0cZj"
+          },
+          "uri": "spotify:track:3n3Ppam7vgaVa1iaRUc9Lp",
+          "href": "https://api.spotify.com/v1/tracks/3n3Ppam7vgaVa1iaRUc9Lp"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Bob",
+      "favoriteSongs": [
+        {
+          "id": "1p80LdxRV74UKvL8gnD7ky",
+          "name": "Shape of You",
+          "artists": [{ "name": "Ed Sheeran" }],
+          "album": {
+            "album_type": "album",
+            "images": [
+              { "url": "https://i.scdn.co/image/ab67616d00001e02b1df5c5a6e8f3a1c8bdbf5e7" }
+            ],
+            "href": "https://api.spotify.com/v1/albums/7dK54iZuOxXFarGhXwEXfF"
+          },
+          "uri": "spotify:track:1p80LdxRV74UKvL8gnD7ky",
+          "href": "https://api.spotify.com/v1/tracks/1p80LdxRV74UKvL8gnD7ky"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Charlie",
+      "favoriteSongs": [
+        {
+          "id": "6habFhsOp2NvshLv26DqMb",
+          "name": "Levitating",
+          "artists": [{ "name": "Dua Lipa" }],
+          "album": {
+            "album_type": "album",
+            "images": [
+              { "url": "https://i.scdn.co/image/ab67616d00001e028c4c5e5a1c1d3b1c5f6b6e6e" }
+            ],
+            "href": "https://api.spotify.com/v1/albums/6AORtDjduMM3bupSWzbTSG"
+          },
+          "uri": "spotify:track:6habFhsOp2NvshLv26DqMb",
+          "href": "https://api.spotify.com/v1/tracks/6habFhsOp2NvshLv26DqMb"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "David",
+      "favoriteSongs": [
+        {
+          "id": "2N2r3ddZzm6EjzHj83gQ8d",
+          "name": "Cinderella",
+          "artists": [{ "name": "Mac Miller" }, { "name": "Ty Dolla $ign" }],
+          "album": {
+            "album_type": "album",
+            "images": [
+              { "url": "https://i.scdn.co/image/ab67616d00001e02d647e4952195263a24366bba" }
+            ],
+            "href": "https://api.spotify.com/v1/albums/4SZko61aMnmgvNhfhgTuD3"
+          },
+          "uri": "spotify:track:2N2r3ddZzm6EjzHj83gQ8d",
+          "href": "https://api.spotify.com/v1/tracks/2N2r3ddZzm6EjzHj83gQ8d"
+        }
+      ]
+    }
+  ]
+}

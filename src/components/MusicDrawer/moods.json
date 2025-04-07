@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Energized",
+    "value": "energized"
+  },
+  {
+    "label": "Chill",
+    "value": "chill"
+  },
+  {
+    "label": "Festive",
+    "value": "festive"
+  },
+  {
+    "label": "Nostalgic",
+    "value": "nostalgic"
+  },
+  {
+    "label": "Feel-good",
+    "value": "feelgood"
+  }
+]
