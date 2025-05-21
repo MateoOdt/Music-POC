@@ -1,7 +1,7 @@
-import { Drawer, Button, Box, Typography, TextField, List, ListItem, ListItemText, ListItemAvatar, Avatar, CircularProgress, ListItemButton, Grid, IconButton, Autocomplete } from "@mui/material";
+import { Drawer, Button, Box, Typography, TextField, List, ListItem, ListItemText, ListItemAvatar, Avatar, CircularProgress, ListItemButton, Grid, IconButton, Autocomplete, Tab, Tabs, Divider, Input, InputAdornment } from "@mui/material";
 import useSpotifyAuth from "../../hooks/useSpotifyAuth";
 import React, { useState, useEffect } from "react";
-import { CaretLeft, Plus, PlusCircle } from "phosphor-react";
+import { CaretLeft, MagnifyingGlass, MusicNotes, Plus, PlusCircle, Star } from "phosphor-react";
 import { PlayPause } from "@phosphor-icons/react";
 import moods from "./moods.json";
 
@@ -34,6 +34,11 @@ interface MusicDrawerProps {
 
 export function MusicDrawer({ open, setOpen }: MusicDrawerProps) {
   const { token, getSpotifyAuthUrl } = useSpotifyAuth();
+  const [tabValue, setTabValue] = useState('one');
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabValue(newValue);
+  };
 
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState<any[]>([]);
@@ -45,19 +50,40 @@ export function MusicDrawer({ open, setOpen }: MusicDrawerProps) {
 
   // 🔎 Fetch songs from Spotify
   const handleSearch = async () => {
-    if (!search || !token) return;
-
+    if (!search || !token) {
+      console.warn("No token or search input.");
+      return;
+    }
+  
     setLoading(true);
-
+  
     try {
-      const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(search)}&type=track&limit=5`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      console.log("Calling Spotify API with token:", token);
+      const response = await fetch(
+        `https://api.spotify.com/v1/search?q=${encodeURIComponent(search)}&type=track&limit=5`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+  
+      if (response.status === 401) {
+        console.error("Unauthorized. Token may be invalid or expired.");
+        setSongs([]);
+        return;
+      }
+  
       const data = await response.json();
-      setSongs(data.tracks.items || []);
+  
+      if (!data.tracks || !Array.isArray(data.tracks.items)) {
+        console.error("Unexpected Spotify API response:", data);
+        setSongs([]);
+        return;
+      }
+  
+      setSongs(data.tracks.items);
     } catch (error) {
       console.error("Error fetching songs:", error);
+      setSongs([]);
     } finally {
       setLoading(false);
     }
@@ -158,6 +184,8 @@ export function MusicDrawer({ open, setOpen }: MusicDrawerProps) {
     }
   }, []);
 
+  console.log('token: ', token);
+
   return (
     <Drawer
       open={open}
@@ -167,9 +195,40 @@ export function MusicDrawer({ open, setOpen }: MusicDrawerProps) {
         sx: { width: "60%", padding: 2 },
       }}
     >
-      <Typography variant="h6" sx={{
-        mb: '40px'
-      }}>🎵 Music Drawer</Typography>
+      <Tabs
+        value={tabValue}
+        onChange={handleTabChange}
+        textColor="inherit"
+        TabIndicatorProps={{
+          sx: {
+            height: 4,
+            borderRadius: '2px',
+          },
+        }}
+        sx={{
+          backgroundColor: 'white',
+          borderBottom: '1px solid #E0E0E0',
+          mb: 2,
+          px: 2,
+        }}
+      >
+        <Tab
+          icon={<MusicNotes size={20} />}
+          iconPosition="start"
+          label="All songs"
+          value="allSongs"
+          sx={{ textTransform: 'none', fontWeight: 600 }}
+        />
+        <Tab
+          icon={<Star size={20} />}
+          iconPosition="start"
+          label="Favorites"
+          value="favoriteSongs"
+          sx={{ textTransform: 'none', fontWeight: 600 }}
+        />
+      </Tabs>
+
+
       <Grid container>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: selectedSong ? '50%' : '100%', transition: "width 0.3s ease-in-out" }}>
 
@@ -180,56 +239,76 @@ export function MusicDrawer({ open, setOpen }: MusicDrawerProps) {
           ) : (
             <>
               {/* Search Input */}
-              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                {selectedSong && (
-                  <IconButton onClick={() => {
-                    setSelectedSong(null);
-                    pauseSong();
-                  }}>
-                    <CaretLeft />
-                  </IconButton>
-                )}
-                <TextField
-                  size="small"
-                  label="Search for a song"
+              <Box
+                sx={{
+                  px: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  backgroundColor: 'white',
+                  border: '1px solid #E0E0E0',
+                  borderRadius: '12px',
+                  height: 48,
+                  mb: 2,
+                }}
+              >
+                <MagnifyingGlass size={20} style={{ marginRight: 8, color: '#9E9E9E' }} />
+                <Input
+                  disableUnderline
+                  placeholder="Search"
+                  fullWidth
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  sx={{ flexGrow: 1 }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearch();
+                    }
+                  }}
+                  sx={{
+                    fontSize: 16,
+                    '&::placeholder': {
+                      color: '#9E9E9E',
+                      opacity: 1,
+                    },
+                  }}
                 />
-                <Button variant="contained" color="primary" onClick={handleSearch}>
-                  Search
-                </Button>
               </Box>
 
-              <List sx={{
-                maxHeight: 300,
-                overflow: "auto",
-                border: "1px solid #ccc",
-                borderRadius: 4,
-                padding: 0,
-                marginTop: 2,
-              }}>
+              <List
+                sx={{
+                  backgroundColor: 'white',
+                  borderRadius: 2,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                  paddingY: 1,
+                }}
+              >
                 {songs.map((song) => (
-                  <ListItem key={song.id} component="div">
-                    {loading ? (
-                      <CircularProgress sx={{ alignSelf: "center" }} />
-                    ) : (
-                      <ListItemButton onClick={() => handleSelectSong(song)}>
-                        <ListItemAvatar>
-                          <Avatar src={song.album.images[0]?.url} />
-                        </ListItemAvatar>
-                        <Grid container alignItems='center' gap='4px'>
-                          <Typography fontWeight={700}>{song.name}</Typography>
-                          <Typography>{song.artists.map((artist: any) => artist.name).join(", ")}</Typography>
-                        </Grid>
-                        <PlusCircle style={{
-                          marginLeft: "auto",
-                          width: '24px',
-                          height: '24px',
-                          color: '#757575'
-                        }} />
-                      </ListItemButton>
-                    )}
+                  <ListItem
+                    key={song.id}
+                    secondaryAction={
+                      <IconButton edge="end" onClick={() => handleSelectSong(song)}>
+                        <PlusCircle size={20} weight="bold" />
+                      </IconButton>
+                    }
+                    disablePadding
+                    sx={{ px: 2 }}
+                  >
+                    <ListItemButton>
+                      <ListItemAvatar>
+                        <Avatar src={song.album.images[0]?.url} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
+                          <Typography fontWeight={700} noWrap>
+                            {song.name}
+                          </Typography>
+                        }
+                        secondary={
+                          <Typography variant="body2" color="text.secondary" noWrap>
+                            {song.artists.map((a: any) => a.name).join(', ')}
+                          </Typography>
+                        }
+                      />
+                    </ListItemButton>
                   </ListItem>
                 ))}
               </List>

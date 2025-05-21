@@ -30,8 +30,10 @@ const useSpotifyAuth = (): SpotifyAuthHook => {
         localStorage.setItem("spotifyToken", accessToken);
         window.location.hash = "";
       }
+      console.log(accessToken);
+      console.log(token);
     }
-  }, []);
+  }, [ window.location.hash]);
 
   return { token, getSpotifyAuthUrl };
 };
